@@ -52,11 +52,13 @@ def deploy_to_gh_pages() -> None:
         if os.path.exists(temp_dir):
             shutil.rmtree(temp_dir, ignore_errors=True)
 
+        auth_repo_url = f"https://x-access-token:{github_token}@github.com/{github_repository}.git"
+
         subprocess.run([
             "git", "clone",
             "--branch", "gh-pages",
             "--single-branch",
-            f"https://{github_token}@github.com/{github_repository}.git",
+            auth_repo_url,
             temp_dir
         ], check=True)
 
