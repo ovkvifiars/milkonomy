@@ -167,8 +167,11 @@ export function getPriceOf(hrid: string, level: number = 0, buyStatus: PriceStat
     return _priceCache[hrid]
   }
   if (isLoot(hrid) && hrid !== "/items/bag_of_10_cowbells") {
-    _priceCache[hrid] = getLootPrice(hrid)
-    return _priceCache[hrid]
+    const lootPrice = getLootPrice(hrid)
+    if (lootPrice) {
+      _priceCache[hrid] = lootPrice
+      return _priceCache[hrid]
+    }
   }
   const shopItem = getGameDataApi().shopItemDetailMap[`/shop_items/${item.hrid.split("/").pop()}`]
   const price = (getMarketDataApi().marketData[item.hrid]?.[0]) || { ask: -1, bid: -1 }
@@ -185,8 +188,11 @@ function isLoot(hrid: string) {
   return getItemDetailOf(hrid).categoryHrid === "/item_categories/loot"
 }
 
-function getLootPrice(hrid: string): MarketItemPrice {
+function getLootPrice(hrid: string): MarketItemPrice | null {
   const drop = getGameDataApi().openableLootDropMap[hrid]
+  if (!drop?.length) {
+    return null
+  }
   return drop.reduce((acc, cur) => {
     const count = (cur.maxCount + cur.minCount) / 2
     const item = getPriceOf(cur.itemHrid)
