@@ -34,7 +34,7 @@ jobs:
           version: 9.15.0
 
       - name: Build
-        run: pnpm install && pnpm build
+        run: pnpm install && pnpm build:staging
 
       # fix https://github.com/vitejs/vite/issues/9119
       - name: Create .nojekyll
